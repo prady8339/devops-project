@@ -1,0 +1,26 @@
+pipeline {
+  agent any
+
+  stages {
+      stage('Clone and Build') {
+          steps {
+              script {
+                withCredentials([usernamePassword(credentialsId: 'dded1dc1-04e8-43e6-89bf-75b6eb14ceec', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh 'git clone https://$GIT_USERNAME:$GIT_PASSWORD@github.com/prady8339/devops-project.git'
+                    sh 'cd devops-project'
+                }
+              }
+          }
+      }
+      stage('Build with Maven') {
+          steps {
+              sh 'mvn clean install'
+          }
+      }
+      stage('Run JUnit Tests') {
+          steps {
+              sh 'mvn test'
+          }
+      }
+  }
+}
